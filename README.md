@@ -59,7 +59,7 @@
 
 ### 方案 A：Paper 插件版（推荐）
 
-1. 从 [Releases](../../releases) 下载 `PaperPanel.jar`（或自行构建）
+1. 从 [Releases](https://github.com/zhangyuhexht/PaperPanel/releases) 下载 `PaperPanel.jar`（或自行构建）
 2. 放到服务器的 `plugins/` 目录，启动服务器
 3. 浏览器打开 `http://<服务器IP>:52369`
 4. **首次启动会生成 `plugins/PaperPanel/config.yml`，立刻把 `password` 改掉**（见下方安全提示）
