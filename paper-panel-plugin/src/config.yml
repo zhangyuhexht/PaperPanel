@@ -1,0 +1,22 @@
+# PaperPanel 网页后台配置
+# 面板密码只保存在本文件（服务端），登录走 nonce + SHA256 校验值，明文不出浏览器
+
+# 监听端口
+port: 52369
+
+# 监听地址（0.0.0.0 = 局域网可访问；仅本机用可改 127.0.0.1）
+host: 0.0.0.0
+
+# 面板密码 —— 上线前务必修改！
+password: change-me-123
+
+# 会话有效期（分钟）
+session-ttl-minutes: 480
+
+# 登录失败锁定：连续失败次数 / 锁定秒数
+login-max-fails: 8
+login-lock-seconds: 300
+
+# 日志回看行数 / 缓冲上限
+log-backlog-lines: 80
+log-buffer-max: 800

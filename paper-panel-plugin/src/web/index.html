@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Panel · Paper 控制台</title>
+<link rel="stylesheet" href="/app.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Crect x='4' y='4' width='24' height='24' rx='5' fill='%23F2F2F2'/%3E%3Cpath d='M11 23V9h6a4 4 0 0 1 0 8h-3v6z' fill='%23000'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<svg hidden aria-hidden="true">
+  <defs>
+    <g id="i-grid"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g>
+    <g id="i-term"><path d="M4 6h16M4 12h10M4 18h13"/></g>
+    <g id="i-users"><circle cx="9" cy="8.5" r="3.4"/><path d="M3.5 19.5c.6-3.4 2.9-5.4 5.5-5.4s4.9 2 5.5 5.4"/><circle cx="17.2" cy="10" r="2.6"/><path d="M15.4 15.6c2.6 0 4.6 1.7 5.1 4.4"/></g>
+    <g id="i-cpu"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 2.5v3M14 2.5v3M10 18.5v3M14 18.5v3M2.5 10h3M2.5 14h3M18.5 10h3M18.5 14h3"/></g>
+    <g id="i-bolt"><path d="M13 3 4 14h6l-1 7 9-11h-6z"/></g>
+    <g id="i-search"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.9-4.9"/></g>
+    <g id="i-out"><path d="M15 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-2"/><path d="M11 12h9m0 0-3.2-3.2M20 12l-3.2 3.2"/></g>
+    <g id="i-moon"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.4 8.4 0 1 0 20 14.5z"/></g>
+    <g id="i-expand"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></g>
+    <g id="i-compress"><path d="M9 4v4a1 1 0 0 1-1 1H4M20 9h-4a1 1 0 0 1-1-1V4M15 20v-4a1 1 0 0 1 1-1h4M4 15h4a1 1 0 0 1 1 1v4"/></g>
+    <g id="i-send"><path d="M3.5 12 20 4l-4.2 16-4.4-6z"/><path d="M20 4 11.4 14"/></g>
+    <g id="i-check"><path d="M4.5 12.5 10 18 19.5 6.5"/></g>
+    <g id="i-x"><path d="M6 6l12 12M18 6 6 18"/></g>
+    <g id="i-plus"><path d="M12 5v14M5 12h14"/></g>
+    <g id="i-book"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M19 3v18"/></g>
+  </defs>
+</svg>
+
+<div class="shell" id="shell">
+
+  <!-- ══════════════ 登录态遮罩 ══════════════ -->
+  <div class="login-layer" id="login-view">
+    <div class="login-box">
+      <div class="login-box__mark" aria-hidden="true">P</div>
+      <h1 class="login-box__title">Paper 控制台</h1>
+      <p class="login-box__lede">面板密码只保存在服务端配置文件中，验证使用一次性校验值，密码本身不会离开浏览器。</p>
+      <form id="login-form" autocomplete="off">
+        <div class="login-box__field">
+          <input id="password" type="password" placeholder="输入面板密码" autocomplete="current-password" required aria-label="面板密码">
+          <button type="button" id="toggle-pw" class="login-box__eye" aria-label="显示或隐藏密码">
+            <svg><use href="#i-search"/></svg>
+          </button>
+        </div>
+        <p id="login-error" class="login-box__error" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit" id="login-btn">进入控制台</button>
+      </form>
+      <p class="login-box__meta">连续失败 8 次将锁定 5 分钟</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ 主区（单列，无侧栏） ══════════════ -->
+  <div class="main">
+    <header class="topbar">
+      <a class="brand" href="#" onclick="return false">
+        <span class="brand__mark" aria-hidden="true">P</span>
+        <span class="brand__name">Paper Panel</span>
+      </a>
+      <span class="topbar__sep" aria-hidden="true">/</span>
+      <span class="topbar__title" id="crumb-title">控制台</span>
+      <div class="topbar__actions">
+        <button class="btn btn--ghost btn--sm" type="button" id="fs-btn" aria-label="全屏显示控制台">
+          <svg aria-hidden="true" class="ic-expand"><use href="#i-expand"/></svg>
+          <svg aria-hidden="true" class="ic-compress" hidden><use href="#i-compress"/></svg>
+          <span id="fs-label">全屏</span>
+        </button>
+        <button class="btn btn--ghost btn--sm" type="button" id="theme-btn" aria-label="切换浅色模式">
+          <svg aria-hidden="true"><use href="#i-moon"/></svg>
+          <span id="theme-label">浅色</span>
+        </button>
+        <button class="btn btn--primary btn--sm" type="button" id="logout-btn" hidden>
+          <svg aria-hidden="true"><use href="#i-out"/></svg>
+          退出
+        </button>
+      </div>
+    </header>
+
+    <main class="content" id="app-view" hidden>
+      <div class="page-head">
+        <h1 class="page-title">控制台 <span id="head-sub">实时状态</span></h1>
+        <p class="page-lede">服务器输出实时推送，指令在下方输入栏发送。危险指令发送前会再次确认。</p>
+        <div class="page-status srv">
+          <span class="srv__dot" id="side-dot" aria-hidden="true"></span>
+          <span class="srv__line" id="side-status">正在连接…</span>
+          <span class="srv__meta">·</span>
+          <span class="srv__meta" id="side-mem">内存 --</span>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">服务器状态</h2>
+          <span class="section__note" id="stats-time">--:--:--</span>
+        </div>
+
+        <div class="stat-grid">
+          <div class="card stat">
+            <p class="stat__label">
+              <svg aria-hidden="true"><use href="#i-bolt"/></svg>
+              TPS
+              <span id="tps-badge" class="tag">—</span>
+            </p>
+            <p class="stat__value"><span id="tps-value">--</span><small>/ 20</small></p>
+            <svg class="sparkline" viewBox="0 0 260 44" preserveAspectRatio="none" aria-label="TPS 趋势">
+              <polyline id="tps-line" points=""></polyline>
+            </svg>
+            <p class="stat__meta">1m / 5m / 15m · <span id="tps-detail">--</span></p>
+          </div>
+
+          <div class="card stat">
+            <p class="stat__label">
+              <svg aria-hidden="true"><use href="#i-users"/></svg>
+              在线玩家
+              <span id="players-badge" class="tag">—</span>
+            </p>
+            <p class="stat__value"><span id="players-value">--</span><small id="players-max">/ 上限 --</small></p>
+            <div class="chips" id="player-chips"></div>
+          </div>
+
+          <div class="card stat">
+            <p class="stat__label">
+              <svg aria-hidden="true"><use href="#i-cpu"/></svg>
+              主机 CPU
+              <span id="cpu-badge" class="tag">—</span>
+            </p>
+            <p class="stat__value"><span id="cpu-value">--</span><small>%</small></p>
+            <div class="meter"><i id="cpu-meter"></i></div>
+            <p class="stat__meta">内存 <span id="mem-value">--</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section console-section">
+        <div class="section__head">
+          <h2 class="section__title">控制台输出</h2>
+          <div class="console-tools">
+            <label class="check">
+              <input type="checkbox" id="autoscroll" checked>
+              <i aria-hidden="true"></i>
+              自动滚动
+            </label>
+            <button class="btn btn--quiet btn--sm" type="button" id="clear-btn">清空</button>
+          </div>
+        </div>
+
+        <div class="console-card card">
+          <div class="console-filter">
+            <div class="segmented" id="level-seg">
+              <button class="seg-btn is-active" type="button" data-filter="ALL">全部</button>
+              <button class="seg-btn" type="button" data-filter="INFO">信息</button>
+              <button class="seg-btn" type="button" data-filter="WARN">警告 <span class="seg-cnt" id="cnt-warn"></span></button>
+              <button class="seg-btn" type="button" data-filter="ERROR">错误 <span class="seg-cnt" id="cnt-error"></span></button>
+            </div>
+            <div class="search">
+              <svg aria-hidden="true"><use href="#i-search"/></svg>
+              <input id="log-search" type="search" placeholder="搜索日志" aria-label="搜索日志" autocomplete="off">
+            </div>
+          </div>
+
+          <div id="console-out" class="console-out" tabindex="0"></div>
+
+          <div class="quick-bar" id="quick-bar"></div>
+
+          <form id="cmd-form" class="cmd-form">
+            <input id="cmd-input" class="cmd-input" type="text" placeholder="输入指令，回车发送（↑↓ 翻阅历史）" autocomplete="off" spellcheck="false" enterkeyhint="send" aria-label="指令输入">
+            <button class="btn btn--primary" type="submit">
+              <svg aria-hidden="true"><use href="#i-send"/></svg>
+              发送
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <span>指标每 3 秒刷新 · 会话仅存于内存，刷新页面需重新登录</span>
+        <span>Paper Panel · 端口 52369</span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="/sha256.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

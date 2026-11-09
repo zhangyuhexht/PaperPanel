@@ -1,0 +1,23 @@
+{
+  "port": 52369,
+  "host": "0.0.0.0",
+  "password": "change-me-123",
+  "mock": true,
+  "sessionTtlMinutes": 480,
+  "logPath": "logs/latest.log",
+  "logBacklogLines": 80,
+  "logBufferMax": 800,
+  "loginMaxFails": 8,
+  "loginLockSeconds": 300,
+  "rcon": {
+    "host": "127.0.0.1",
+    "port": 25575,
+    "password": "",
+    "timeoutMs": 5000
+  },
+  "tls": {
+    "enabled": false,
+    "certFile": "",
+    "keyFile": ""
+  }
+}

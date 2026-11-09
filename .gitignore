@@ -1,0 +1,28 @@
+# ---- 工作区 / 编辑器 ----
+.workbuddy/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- 可再生构建产物（build.sh 会自动下载依赖并编译）----
+paper-panel-plugin/lib/
+paper-panel-plugin/out/
+paper-panel-plugin/PaperPanel.jar
+*.class
+*.jar
+
+# ---- 本地测试服务器：服务端核心、世界存档、运行时配置 ----
+paper-panel-plugin/test-server/
+
+# ---- 历史预览截图（最新版已归档到 docs/screenshots/）----
+paper-panel/preview/
+paper-panel-plugin/preview/
+
+# ---- 临时文件 ----
+.smoke/
+.live-shot/
+*.log
+hs_err_pid*.log
+server-run.log
+*.tmp

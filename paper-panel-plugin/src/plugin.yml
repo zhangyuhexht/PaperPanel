@@ -1,0 +1,6 @@
+name: PaperPanel
+version: 1.0.0
+main: mcpanel.PaperPanelPlugin
+api-version: "1.20"
+description: 服务器网页后台控制台：控制台输出/指令下发/TPS/在线人数/CPU
+author: WorkBuddy
